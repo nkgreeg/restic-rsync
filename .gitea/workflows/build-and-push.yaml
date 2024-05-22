@@ -1,0 +1,34 @@
+name: Build docker image
+on:
+  release:
+    types: [ published ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ vars.BASE_ACT_DOCKER_IMAGE }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Edit env file
+        run: |
+          cp env.example env
+          sed -i 's%<CONTAINER_REGISTRY_DOMAIN>%${{ vars.CONTAINER_REGISTRY_DOMAIN }}%g' env
+          sed -i 's%<DOCKER_IMAGE_TAG>%${{ gitea.repository }}%g' env
+          sed -i 's%<DOCKER_IMAGE_VERSION>%${{ gitea.ref_name }}%g' env
+          sed -i 's%<CONTAINER_REGISTRY_USER>%${{ gitea.repository_owner }}%g' env
+          sed -i 's%<CONTAINER_REGISTRY_PASSWORD>%${{ secrets.CONTAINER_REGISTRY_PASSWORD }}%g' env
+
+      - name: Setup scripts permissions
+        run: chmod u+x build push versions
+
+      - name: Docker build
+        run: ./build
+
+      - name: Push to Container Registry
+        run: ./push
+
+      - name: Output versions
+        run: ./versions

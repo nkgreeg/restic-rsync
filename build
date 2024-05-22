@@ -1,0 +1,23 @@
+#!/bin/bash
+#############
+## Prepare ##
+#############
+set -e
+directory=$(cd "$(dirname "${0}")" &> /dev/null && pwd)
+
+
+##############
+## Includes ##
+##############
+. "${directory}/env"
+
+
+#############
+## Execute ##
+#############
+docker build \
+  --no-cache \
+  --progress plain \
+  -t "${CONTAINER_REGISTRY_DOMAIN}/${DOCKER_IMAGE_TAG}:${DOCKER_IMAGE_VERSION}" \
+  -t "${CONTAINER_REGISTRY_DOMAIN}/${DOCKER_IMAGE_TAG}:latest" \
+  .

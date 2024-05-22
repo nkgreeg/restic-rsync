@@ -1,0 +1,20 @@
+#!/bin/bash
+#############
+## Prepare ##
+#############
+set -e
+directory=$(cd "$(dirname "${0}")" &> /dev/null && pwd)
+
+
+##############
+## Includes ##
+##############
+. "${directory}/env"
+
+
+#############
+## Execute ##
+#############
+docker login -u="${CONTAINER_REGISTRY_USER}" -p="${CONTAINER_REGISTRY_PASSWORD}" "${CONTAINER_REGISTRY_DOMAIN}"
+docker image push "${CONTAINER_REGISTRY_DOMAIN}/${DOCKER_IMAGE_TAG}:${DOCKER_IMAGE_VERSION}"
+docker image push "${CONTAINER_REGISTRY_DOMAIN}/${DOCKER_IMAGE_TAG}:latest"

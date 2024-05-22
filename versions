@@ -1,0 +1,23 @@
+#!/bin/bash
+#############
+## Prepare ##
+#############
+set -e
+directory=$(cd "$(dirname "${0}")" &> /dev/null && pwd)
+
+
+##############
+## Includes ##
+##############
+. "${directory}/env"
+
+
+#############
+## Execute ##
+#############
+docker run "${CONTAINER_REGISTRY_DOMAIN}/${DOCKER_IMAGE_TAG}:${DOCKER_IMAGE_VERSION}" \
+  restic version; \
+  jq -V; \
+  curl -V; \
+  wget -V; \
+  ssh -V;
